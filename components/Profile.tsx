@@ -4,7 +4,8 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import ProfileCard from "./ProfileCard";
+import ProfileCard from "@components/ProfileCard";
+import Spinner from "@components/Spinner";
 import { Post } from "@types";
 
 
@@ -15,8 +16,11 @@ const Profile = () => {
 	const { data: session, status } = useSession();
 
 	const [myPosts, setMyPosts] = useState<Post[]>([]);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
+
+		if (session?.error) console.log(`[Profile.jsx/fetchPosts()](${new Date().toISOString()}) Session error: `, session.error)
 
 		if (status === "loading") return;
 
@@ -29,7 +33,10 @@ const Profile = () => {
 
 			if (!session?.user?.id) return;
 
+			setIsLoading(true);
+
 			try {
+				
 				const response = await fetch(`/api/users/${session.user.id}/posts`);
 
 				if (!response.ok) {
@@ -42,6 +49,8 @@ const Profile = () => {
 				
 			} catch (error) {
 				setMyPosts([])
+			} finally {
+				setIsLoading(false);
 			}
 
 		};
@@ -49,6 +58,12 @@ const Profile = () => {
 		fetchPosts();
 
 	}, [session?.user?.id, status]);
+
+	if (isLoading) {
+		return (
+			<Spinner />
+		)
+	}
 
 
 

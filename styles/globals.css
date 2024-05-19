@@ -36,6 +36,10 @@
   filter: invert(1);
 }
 
+.navIndex {
+	z-index: 1000; /* spinner is 500 */
+}
+
 .gradient {
   height: fit-content;
   z-index: 3;
@@ -93,6 +97,10 @@
 	@apply rounded-full border border-none bg-transparent py-1.5 px-5 text-gray-700 transition-all hover:bg-primary-orange hover:text-white hover:border-primary-orange text-center text-sm font-inter flex items-center justify-center;
 }
 
+.delete_outline_btn_active {
+	@apply rounded-full border  py-1.5 px-5  transition-all bg-primary-orange text-white border-primary-orange text-center text-sm font-inter flex items-center justify-center;
+}
+
 .head_text {
   @apply mt-5 text-5xl font-extrabold leading-[1.15] text-black sm:text-6xl;
 }
@@ -126,7 +134,6 @@
 }
 
 .glassmorphism {
-  /* @apply rounded-[20px] border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-5; */
   @apply rounded-[20px] border border-gray-200 bg-white/20 p-5;
 }
 

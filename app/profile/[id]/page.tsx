@@ -1,3 +1,7 @@
+// This is no longer in use but should still work as long as you make sure the Profile component can accept the data. Currently, the Profile component does the data fetching internally. 
+// Just keeping this file here so I remember how to handle params.
+
+
 "use client"; 
 
 import { useEffect, useState } from "react";
