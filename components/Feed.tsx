@@ -2,18 +2,18 @@
 
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 import CapsuleCard from "@components/CapsuleCard";
+import Spinner from "@components/Spinner";
 import { Post } from "@types"
 
 
 
 const Feed = () => {
-	// const router = useRouter();
 	const { data: session, status } = useSession();
 
 	const [myPosts, setMyPosts] = useState<Post[]>([]);
+	const [isLoading, setIsLoading] = useState(false);
 
 	// Search states
 	const [searchText, setSearchText] = useState("");
@@ -21,9 +21,13 @@ const Feed = () => {
 	const [searchedResults, setSearchedResults] = useState<Post[]>([]);
 
 	useEffect(() => {
-
+		
 		const fetchPosts = async () => {
+			
+			setIsLoading(true);
+			
 			try {
+
 				const response = await fetch(`/api/users/${session?.user.id}/posts`);
 
 				if (!response.ok) {
@@ -33,12 +37,16 @@ const Feed = () => {
 				const data = await response.json();
 	
 				setMyPosts(data);
+
 			} catch (error) {
 				setMyPosts([])
+			} finally {
+				setIsLoading(false);
 			}
 		};
 
 		if (session?.user.id) fetchPosts();
+
 	}, [session?.user.id]);
 
 	const filterCapsules = (searchtext: string) => {
@@ -69,6 +77,12 @@ const Feed = () => {
 		const searchResult = filterCapsules(tagName);
 		setSearchedResults(searchResult);
 	};
+
+	if (isLoading) {
+		return (
+			<Spinner />
+		)
+	}
 
 	return (
 		<section className='w-full flex-center flex-col'>

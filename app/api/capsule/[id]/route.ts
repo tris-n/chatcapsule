@@ -61,9 +61,9 @@ export const DELETE = async (request: Request, { params }: ParamsProps) => {
 
         // Find the capsule by ID and remove it
         const deleteResults = await Capsule.findByIdAndDelete(params.id);
-
         return new Response("Capsule deleted successfully", { status: 200 });
     } catch (error) {
+		console.log(`Error deleting Capsule`, error)
         return new Response("Error deleting Capsule", { status: 500 });
     }
 };

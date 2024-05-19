@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import SpinnerButton from "@components/SpinnerButton";
 import { FormProps } from "@types";
 
 
@@ -29,6 +30,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }: FormProps) => {
 					type='text'
 					placeholder='Paste your conversation URL here'
 					required
+					disabled={submitting}
 					className='form_input'
 				/>
 				</label>
@@ -43,6 +45,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }: FormProps) => {
 					type='text'
 					placeholder='Paste your conversation title here'
 					required
+					disabled={submitting}
 					className='form_input'
 				/>
 				</label>
@@ -57,6 +60,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }: FormProps) => {
 					onChange={(e) => setPost({ ...post, summary: e.target.value })}
 					placeholder='Write your summary here'
 					required
+					disabled={submitting}
 					className='form_textarea'
 				/>
 				</label>
@@ -74,26 +78,25 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }: FormProps) => {
 					type='text'
 					placeholder='Write your tags here, separated by commas. Example: webdev, code, idea'
 					required
+					disabled={submitting}
 					className='form_input'
 				/>
 				</label>
 
 				<div className='flex-end mx-3 mb-5 gap-4'>
-				<Link href='/' className='outline_btn'>
-					Cancel
-				</Link>
-
-				<button
-					type='submit'
-					disabled={submitting}
-					className='edit_outline_btn2'
-				>
 					{submitting ? 
-						type === 'Create' ? `Creating...` : `Editing...`
-					: 
-						type
+						<button disabled className='outline_btn'>
+							Cancel
+						</button>
+					:
+						<Link href='/' className='outline_btn'>
+							Cancel
+						</Link>
 					}
-				</button>
+
+					{submitting ? <SpinnerButton type={type} /> : 
+						<button type="submit" className='edit_outline_btn2'>{type}</button>
+					}
 				</div>
 			</form>
 		</section>

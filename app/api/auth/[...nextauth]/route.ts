@@ -53,6 +53,7 @@ const handler = NextAuth({
 				}
 
 			} catch (error) {
+				console.log("Error checking if user exists: ", error);
 				return false
 			}
 		},

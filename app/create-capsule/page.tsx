@@ -47,7 +47,7 @@ const CreateCapsule = () => {
 				router.push("/");
 			}
 		} catch (error) {
-			console.log(error);
+			console.log(`Error creating Capsule`, error);
 		} finally {
 			setIsSubmitting(false);
 		}

@@ -5,15 +5,17 @@ import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Form from "@components/Form";
+import Spinner from "@components/Spinner";
 
 
-// The actual form. Have to put it in a separate component so we can check if its loaded before displaying it. https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
-const UpdateForm = () => {
+
+const UpdateCapsule = () => {
 	const router = useRouter();
 	const { data: session, status } = useSession();
 	const searchParams = useSearchParams();
 	const capsuleId = searchParams.get("id");
 
+	const [isLoading, setIsLoading] = useState(false);
 	const [submitting, setIsSubmitting] = useState(false);
 	const [post, setPost] = useState({ url: "", title: "", summary: "", tag: "" });
 
@@ -32,25 +34,37 @@ const UpdateForm = () => {
 			return;
 		}
 
-		const getCapsuleDetails = async () => {
-			const response = await fetch(`/api/capsule/${capsuleId}`);
-			const data = await response.json();
+		setIsLoading(true);
 
-			// if no user id
-			if (!session?.user?.id) return;
-			
-			// if user id doesnt match the user.id
-			if (session?.user?.id !== data.creator._id) {
-				router.push('/');
-				return;
+		const getCapsuleDetails = async () => {
+
+			try {
+				
+				const response = await fetch(`/api/capsule/${capsuleId}`);
+				const data = await response.json();
+
+				// if no user id
+				if (!session?.user?.id) return;
+				
+				// if user id doesnt match the user.id
+				if (session?.user?.id !== data.creator._id) {
+					router.push('/');
+					return;
+				}
+
+				setPost({
+					url: data.url,
+					title: data.title,
+					summary: data.summary,
+					tag: data.tag,
+				});
+				
+			} catch (error) {
+				console.error('Failed to fetch capsule details:', error);
+			} finally {
+				setIsLoading(false);
 			}
 
-			setPost({
-				url: data.url,
-				title: data.title,
-				summary: data.summary,
-				tag: data.tag,
-			});
 		};
 
 		getCapsuleDetails();
@@ -81,11 +95,17 @@ const UpdateForm = () => {
 				router.push("/");
 			}
 		} catch (error) {
-			console.log(error);
+			console.log(`Error updating Capsule`, error);
 		} finally {
 			setIsSubmitting(false);
 		}
 	};
+
+	if (isLoading) {
+		return (
+			<Spinner />
+		)
+	}
 
 	return (
 		<Form
@@ -98,12 +118,12 @@ const UpdateForm = () => {
 	);
 };
 
-const UpdateCapsule = () => {
+const UpdatePage = () => {
 	return (
-		<Suspense fallback={<div>Loading...</div>}>
-			<UpdateForm />
+		<Suspense fallback={<Spinner />}>
+			<UpdateCapsule />
 		</Suspense>
 	)
 }
 
-export default UpdateCapsule;
+export default UpdatePage;
